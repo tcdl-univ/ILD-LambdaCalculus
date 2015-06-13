@@ -19,7 +19,7 @@ trait CalculusParser extends StdTokenParsers with PackratParsers {
   lazy val application = positioned(expr ~ statement ^^ { case left ~ right => Apply(left, right) })
   lazy val variable = positioned(ident ^^ Variable.apply)
   lazy val parens: Parser[Expression] = "(" ~> expr <~ ")"
-  lazy val number = numericLit ^^ { case n => Integer(n.toInt) }
+  lazy val number = numericLit ^^ { case n => CNumber(n.toInt) }
 
   lazy val defs = repsep(defn, ";") <~ opt(";") ^^ Map().++
   lazy val defn = ident ~ "=" ~ expr ^^ { case id ~ "=" ~ t => id -> t }
@@ -27,11 +27,6 @@ trait CalculusParser extends StdTokenParsers with PackratParsers {
   def apply(input: String) = parse(input) match {
     case Success(result, _) => result
     case NoSuccess(msg, _)  => throw ParseException(msg)
-  }
-
-  def applyDefinitions(input: String) = definitions(input) match {
-    case Success(result, _) => result
-    case NoSuccess(msg, _)  => throw DefinitionsException(msg)
   }
 
   def definitions(str: String): ParseResult[Map[String, Expression]] = {

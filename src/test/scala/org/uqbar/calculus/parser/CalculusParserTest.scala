@@ -19,6 +19,14 @@ class CalculusTest extends FreeSpec with Matchers with CalculusParser {
       "simple recursive expression" in {  
         parse("4") should be(Integer(4))
       }
+      
+      "simple definition of true value" in {
+        parse("λt. λf. t") should be(Integer(1))
+      }
+      
+      "simple definition of succ" in {
+        parse("λn.λs.λz. s (n s z)") should be(Integer(1))
+      }
     }
   }
 }
